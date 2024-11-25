@@ -1,0 +1,4 @@
+name,minUnit,yenUnit,maxYen
+weekdays_daytime,20,100,900
+weekdays_night,60,100,300
+holiday,20,200,2000

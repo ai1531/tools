@@ -1,0 +1,4 @@
+name,Sunday,Monday,Tuesday,Wednesday,Thursday,Friday,Saturday,validFlg
+weekend,1,0,0,0,0,0,1,1
+weekendAndFri,1,0,0,0,0,1,1,0
+NotWeekend,0,1,1,1,1,1,0,0
