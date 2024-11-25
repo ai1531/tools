@@ -13,6 +13,7 @@
 #define true 1
 #define false 0
 #define NUM 100
+#define MAX_TIME 720 // max hour
 #define weekdays_daytime 0
 #define weekdays_night 1
 #define holiday 2
@@ -68,11 +69,13 @@ typedef struct
 }PayType;
 
 // coinParkInit.c
-Holiday holidayList[NUM];
-DayOff dayOffList[NUM];
-Night nightTimeList[NUM];
-DayTime dayTime;
-PayType payTypeList[NUM_OF_PAYTYPE + 1];
+extern Holiday holidayList[NUM];
+extern DayOff dayOffList[NUM];
+extern Night nightTimeList[NUM];
+extern DayTime dayTime;
+extern PayType payTypeList[NUM_OF_PAYTYPE + 1];
+
+void initializeLists();
 int initSetting(Holiday holiList[NUM], DayOff dyOfList[NUM], Night nitList[NUM], PayType pyTpList[NUM_OF_PAYTYPE + 1]);
 int setHoliday(Holiday holiList[NUM]);
 int setDayOff(DayOff dyOfList[NUM]);
@@ -92,20 +95,33 @@ typedef struct
     int min;
 } Dates;
 
-int manager();
+void manager();
 Dates createStruct(int year, int month, int day, int hour, int min);
 void printSetMessage(int errCode, char *name, char *phase);
-int getInputData(Dates data, char *name, char *phase);
+int getInputData(Dates *data, char *name, char *phase);
 int checkleap (int year);
-int mkLastDay (int year, int month);
-int inputAnalisys(Dates data, char *name);
+int inputAnalisys(Dates *data, char *name);
 Dates setData(char *phase);
 
+// coinParkCommonFcn.c
+Dates createStruct(int year, int month, int day, int hour, int min);
+int checkleap (int year);
+int toMinutes(int hour, int minute);
+int toHour(Dates *date);
+Dates getEarlierDate(Dates date1, Dates date2);
+int jdgSameDates(Dates date1, Dates date2);
+Dates addMinutes(Dates date, int x);
+int calcWeekday(Dates date);
+int mkLastDay (int year, int month);
+
 // coinParkCalcTime.c
-int calcTime(Dates startDates, Dates endDates, Dates diffDates);
-void calcDiffDates(Dates start, Dates end, Dates diff);
+int calcTime(Dates startDates, Dates endDates, Dates *diffDates);
+void calcDiffDates(Dates start, Dates end, Dates *diff);
 int jdgDiffDates(Dates date);
 
 // coinParkCalcPayment.c
 int calcPayment(Dates startDates, Dates endDates, Dates diffDates);
-int checkWeekday(Dates date);
+int jdgHoliday(Dates date);
+int jdgDayOff(Dates date);
+int jdgNightTime(Dates date);
+int checkDate(Dates date);

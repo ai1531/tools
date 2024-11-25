@@ -3,9 +3,6 @@
 
 #include "coinPark.h"
 
-Holiday holidayList[NUM];
-DayOff dayOffList[NUM];
-
 int initSetting(Holiday holiList[NUM], DayOff dyOfList[NUM], Night nitList[NUM], PayType pyTpList[NUM_OF_PAYTYPE + 1])
 {
     int ansHoli = 0;
@@ -28,7 +25,7 @@ int initSetting(Holiday holiList[NUM], DayOff dyOfList[NUM], Night nitList[NUM],
         printf("U>.<U <( Failed to load day off list. )\n");
         return -1;
     }
-    printList(holiList, dyOfList, nitList, dayT, pyTpList);
+    // printList(holiList, dyOfList, nitList, dayT, pyTpList);
     return 0;
 }
 
@@ -166,7 +163,7 @@ DayTime calcDayTime(Night nitList[NUM])
         }
 
         // set end of night to next start time of non-night
-        currentStart = nightEnd + 1;
+        currentStart = nightEnd;
     }
 
     return dayT;

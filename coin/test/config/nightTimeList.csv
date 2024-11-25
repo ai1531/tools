@@ -1,4 +1,4 @@
 name,startHour,startMinute,endHour,endMinute,validFlg
-earlyMorning,0,0,6,59,1
-night,22,00,23,59,1
-earlyNight,18,00,21,59,0
+earlyMorning,0,0,7,0,1
+night,22,00,24,0,1
+earlyNight,18,00,22,0,0

@@ -18,28 +18,40 @@ Dates createStruct(int year, int month, int day, int hour, int min)
 
 int checkleap (int year)
 {
-    int ans;
     if (year % 4 == 0)
     {
         if ((year % 100 == 0) && (year % 400 != 0))
         {
-            ans = false;
+            return false;
         }
         else
         {
-            ans = true;
+            return true;
         }
     }
-    else
-    {
-        ans = false;
-    }
+    return false;
 }
 
 // convert : hour -> minute
 int toMinutes(int hour, int minute)
 {
     return hour * 60 + minute;
+}
+
+int toHour(Dates *date)
+{
+    int ans;
+    if (checkleap(date->year) == true)
+    {
+        ans = date->year * 366 * 24 
+            + date->day * 24 + date->hour + date->min;
+    }
+    else
+    {
+        ans = date->year * 365 * 24 
+            + date->day * 24 + date->hour + date->min;
+    }
+    return ans;
 }
 
 Dates getEarlierDate(Dates date1, Dates date2)
@@ -60,7 +72,18 @@ Dates getEarlierDate(Dates date1, Dates date2)
     return date2;
 }
 
-Dates addMinutes(Dates date, int x) {
+int jdgSameDates(Dates date1, Dates date2)
+{
+    if (date1.year != date2.year) return false;
+    if (date1.month != date2.month) return false;
+    if (date1.day != date2.day) return false;
+    if (date1.hour != date2.hour) return false;
+    if (date1.min != date2.min) return false;
+    return true;
+}
+
+Dates addMinutes(Dates date, int x)
+{
     struct tm timeStruct = {0};
     time_t timeValue;
 

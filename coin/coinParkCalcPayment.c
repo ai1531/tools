@@ -1,11 +1,72 @@
 #include <stdio.h>
+#include <string.h>
 #include <time.h>
 
 #include "coinPark.h"
 
-int calcPayment(Dates startDates, Dates endDates, Dates diffDates)
-{}
+int calcPayment(Dates startDate, Dates endDate, Dates diffDates)
+{
+    int totalPayment = 0;
 
+    Dates currentDate = startDate;
+
+    while (jdgSameDates(currentDate, endDate) == false)
+    {
+        // judge : time and paymentTime
+        int pattern = checkDate(currentDate);
+        int unitMinutes = payTypeList[pattern].minUnit;
+        int unitRate = payTypeList[pattern].yenUnit;
+        int maxRate = payTypeList[pattern].maxYen;
+        printf("1");
+
+        // calc : end time(in same payment type)
+        Dates nextBoundary;
+        switch (pattern)
+        {
+            case weekdays_daytime:
+                nextBoundary = createStruct(currentDate.year, currentDate.month, currentDate.day
+                                            , dayTime.endHour, dayTime.endMinute);
+                break;
+            case weekdays_night:
+                nextBoundary = addMinutes(createStruct(currentDate.year, currentDate.month, currentDate.day
+                                            , dayTime.startHour, dayTime.startMinute), 24 * 60);
+                break;
+            case holiday:
+                nextBoundary = addMinutes(createStruct(currentDate.year, currentDate.month, currentDate.day
+                                            , dayTime.startHour, dayTime.startMinute), 24 * 60);
+                break;
+        }
+        printf("2");
+
+        // compare : end time and next time
+        Dates segmentEnd = getEarlierDate(endDate, nextBoundary);
+        printf("3");
+
+        // calc : time in this part
+        Dates segmentDiff;
+        calcTime(currentDate, segmentEnd, &segmentDiff);
+        printf("4");
+        int segmentMinutes = (segmentDiff.day * 24 * 60) +
+                             (segmentDiff.hour * 60) +
+                             segmentDiff.min;
+        printf("5");
+
+        // calc : payment in this part
+        int segmentPayment = (segmentMinutes / unitMinutes) * unitRate;
+        if (segmentPayment > maxRate) {
+            segmentPayment = maxRate;
+            printf("6");
+        }
+
+        totalPayment += segmentPayment;
+
+        // set : next start time
+        currentDate = segmentEnd;
+        printf("7");
+    }
+
+    return totalPayment;
+}
 
 
 // the date is Holiday or not
@@ -29,7 +90,7 @@ int jdgHoliday(Dates date)
 // the date is day off or not
 int jdgDayOff(Dates date)
 {
-    int weekday = checkWeekday(date);
+    int weekday = calcWeekday(date);
     int i = 0;
     int idx = -1;
 
@@ -80,59 +141,9 @@ int checkDate(Dates date)
         pattern = holiday;
     }
     else if (jdgNightTime(date) == true) {
-        pattern = weekday_night;
+        pattern = weekdays_night;
     } else {
-        pattern = weekday_daytime;
+        pattern = weekdays_daytime;
     }
     return pattern;
-}
-
-
-
-void calcSamePtnEndDates(Dates startDates, Dates endDates, Dates startList[NUM], Dates endList[NUM], PayType payTypeList[NUM])
-{
-    int i = 0;
-    int ptn = 0;
-    int holiIdx = -1;
-    int dyOfIdx = -1;
-    int nitIdx = -1;
-    Dates tmpDates = {0};
-    ptn = checkDate(startDates);
-    startList = {0};
-    endList = {0};
-    startList[0] = startDates;
-    while (endList[i] != endDates)
-    {
-        holiIdx = jdgHoliday(startList[i]);
-        dyOfIdx = jdgDayOff(startList[i]);
-        nitIdx = jdgNightTime(startList[i]);
-        payType[i] = ptn;
-        switch (ptn)
-        {
-            case weekdays_night:
-                tmpDates = createStruct(startDates.year, startDates.month, startDates.day, nightTimeList[nitIdx].endHour, nightTimeList[nitIdx].endMinute);
-                tmpDates = getEarlierDate(endDates, tmpDates);
-                endList[i] = cerateStruct(startDates.year, startDates.month, startDates.day, tmpDates.Hour, tmpDates.Minutes);
-                startList[i] = addMinutes(endList, 1);
-                i++;
-                break;
-            case holiday:
-                tmpDates = createStruct(startDates.year, startDates.month, startDates.day, MAX_HOUR, MAX_MIN);
-                tmpDates = getEarlierDate(endDates, tmpDates);
-                endList[i] = cerateStruct(startDates.year, startDates.month, startDates.day, tmpDates.Hour, tmpDates.Minutes);
-                startList[i] = addMinutes(endList, 1);
-                i++;
-                break;
-            case weekdays_daytime:
-                tmpDates = createStruct(startDates.year, startDates.month, startDates.day, dayTime.endHour, dayTime.endMinute);
-                tmpDates = getEarlierDate(endDates, tmpDates);
-                endList[i] = cerateStruct(startDates.year, startDates.month, startDates.day, tmpDates.Hour, tmpDates.Minutes);
-                startList[i] = addMinutes(endList, 1);
-                i++;
-                break;
-            case default:
-                endList[i] = cerateStruct(0, 0, 0, 0, 0);
-                break;
-        }
-    }
 }
