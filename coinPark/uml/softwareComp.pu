@@ -1,0 +1,63 @@
+@startuml component
+left to right direction
+
+storage メイン関数 {
+    package スケジューラー
+    package 入力管理機能 {
+        file 入力管理機能のスケジューラー
+        file 入力値の受付関数
+        file 入力値の判定関数
+    }
+    package 駐車料金計算機能 {
+        file 駐車料金計算機能のスケジューラー
+        file 料金形態の判定関数
+    }
+    package 出力管理機能 {
+        file 料金表示関数
+        file エラーメッセージ表示関数
+    }
+    スケジューラー -[hidden]-> 入力管理機能
+    スケジューラー -[hidden]-> 駐車料金計算機能
+    スケジューラー -[hidden]-> 出力管理機能
+}
+
+@enduml
+
+@startuml folder
+
+folder コインパーキング料金シミュレーター {
+    folder config {
+        file coinParkDB.h
+    }
+    folder lib {
+        frame 共通計算機能 {
+            file coinParklib.h
+            file coinParklib.c
+        }
+    }
+    frame メイン関数 {
+        file main.c
+    }
+    frame スケジューラー {
+        file coinParkManager.c
+    }
+    frame 入力管理機能 {
+        file userIn.c
+    }
+    frame 駐車料金計算機能 {
+        file cal_park_fee.c
+        file cal_day.c
+        file disc_fee_pattern.c
+    }
+    frame 出力管理機能 {
+        file coinParkDisplay.c
+    }
+}
+config -[hidden]-> lib
+lib -[hidden]-> メイン関数
+lib -[hidden]-> スケジューラー
+lib -[hidden]-> 入力管理機能
+lib -[hidden]-> 駐車料金計算機能
+lib -[hidden]-> 出力管理機能
+
+@enduml

@@ -1,0 +1,4 @@
+name,startHour,startMinute,endHour,endMinute,validFlg
+earlyMorning,0,0,7,00,1
+night,22,00,24,00,1
+earlyNight,18,00,22,00,0
